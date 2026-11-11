@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../../lib/supabaseClient';
 import { useAuth } from '../../auth/hooks/useAuth';
+import type { Profile } from '../../../types/database';
 
 export function useProfile() {
   const { user } = useAuth();
@@ -14,14 +15,14 @@ export function useProfile() {
       const { data, error } = await supabase
         .from('recycling_app_user_profiles')
         .select('id, username, role, created_at')
-        .eq('auth_user_id', user.id)
+        .eq('auth_user_id', user!.id)
         .maybeSingle();
       if (error) throw error;
-      return data;
+      return data as Profile | null;
     },
   });
 
-  const setProfile = (updated) => {
+  const setProfile = (updated: Profile) => {
     queryClient.setQueryData(['profile', user?.id], updated);
   };
 

@@ -8,19 +8,20 @@ import { IconAlertTriangle, IconPhoto } from '@tabler/icons-react';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { submissionService } from '../services/submissionService';
 import { SubmissionCard } from '../components/SubmissionCard';
+import type { Submission } from '../../../types/database';
 
 export function SubmissionsPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState<Submission | null>(null);
   const queryKey = ['submissions', user?.id];
   const submissions = useQuery({
     queryKey,
     enabled: !!user,
-    queryFn: () => submissionService.listSubmissions(user.id),
+    queryFn: () => submissionService.listSubmissions(user!.id),
   });
   const deletion = useMutation({
-    mutationFn: (submission) => submissionService.removeSubmission(submission, user.id),
+    mutationFn: (submission: Submission) => submissionService.removeSubmission(submission, user!.id),
     onSuccess: () => {
       setSelected(null);
       return queryClient.invalidateQueries({ queryKey });
@@ -78,7 +79,7 @@ export function SubmissionsPage() {
           {deletion.isError && <Alert color="#7e3a34" title="Deletion failed">{deletion.error.message || 'Please try again.'}</Alert>}
           <Group justify="flex-start">
             <Button variant="default" disabled={deletion.isPending} onClick={() => setSelected(null)}>Cancel</Button>
-            <Button color="#7e3a34" loading={deletion.isPending} onClick={() => deletion.mutate(selected)}>Delete submission</Button>
+            <Button color="#7e3a34" loading={deletion.isPending} disabled={!selected} onClick={() => { if (selected) deletion.mutate(selected); }}>Delete submission</Button>
           </Group>
         </Stack>
       </Modal>

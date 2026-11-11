@@ -2,14 +2,15 @@ import { Box, Container, Title, Paper, Text, Anchor, Stack } from '@mantine/core
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthForm } from '../components/AuthForm';
 import { useAuth } from '../hooks/useAuth';
+import type { AuthFormValues } from '../components/AuthForm';
 
 export function LoginPage() {
   const { signInWithPassword } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname ?? '/';
+  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? '/';
 
-  const handlePasswordLogin = async ({ email, password }) => {
+  const handlePasswordLogin = async ({ email, password }: AuthFormValues) => {
     await signInWithPassword(email, password);
     navigate(from, { replace: true });
   };

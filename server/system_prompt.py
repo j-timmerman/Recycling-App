@@ -13,7 +13,8 @@ allowed material types (you must choose exactly one of these keys, or none):
 Task:
 - First decide whether the image clearly shows an item matching one of the allowed material types.
 - If it does not, set `contains_recyclable_item` to false, leave `material_type` and
-  `item_description` empty, and briefly describe what the image does show in `unidentified_reason`.
+  `item_description` empty, and briefly describe what the image does show in `unidentified_reason`, 
+  followed by the statement that the item does not match any of the allowed recyclable material types.
 - If it does, set `contains_recyclable_item` to true, set `material_type` to the single best-matching
   key from the allowed list above, and provide a short, specific `item_description`
   (e.g. "aluminum soda can", "cardboard shipping box").

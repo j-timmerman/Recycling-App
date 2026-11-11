@@ -55,7 +55,7 @@ export function AppLayout() {
   );
 
 
-  const isActive = (to) =>
+  const isActive = (to: string) =>
     location.pathname === to || location.pathname.startsWith(`${to}/`);
 
   const handleSignOut = async () => {
@@ -78,14 +78,9 @@ export function AppLayout() {
           <Group gap="sm">
             <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" color="#ebece6" />
             <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" color="#ebece6" />
-            <Title
-              order={4}
-              component={Link}
-              to="/"
-              style={{ textDecoration: 'none', color: '#ebece6' }}
-            >
-              Can I Recycle It?
-            </Title>
+            <Link to="/" style={{ textDecoration: 'none', color: '#ebece6' }}>
+              <Title order={4} c="inherit">Can I Recycle It?</Title>
+            </Link>
           </Group>
           <Group gap="md">
             {user ? (

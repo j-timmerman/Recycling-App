@@ -1,12 +1,13 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../../lib/supabaseClient';
 import { authService } from '../services/authService';
+import { AuthContext } from './AuthContext';
+import type { Session } from '@supabase/supabase-js';
+import type { ReactNode } from 'react';
 
-export const AuthContext = createContext(null);
-
-export function AuthProvider({ children }) {
-  const [session, setSession] = useState(null);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const queryClient = useQueryClient();
 

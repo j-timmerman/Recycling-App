@@ -5,10 +5,11 @@ import {
 import {
   IconCircleCheck, IconCircleX, IconExternalLink, IconRecycle,
 } from '@tabler/icons-react';
+import type { IdentificationResult } from '../../../types/api';
 
 
 // Shows a placeholder card when the image hasn't been submitted yet, or while the image is being analyzed.
-export function PlaceholderResultCard({ loading }) {
+export function PlaceholderResultCard({ loading }: { loading: boolean }) {
   return (
     <Paper withBorder radius="md" p="md" style={{ borderStyle: 'dashed', flex: 1 }}>
       <Stack align="center" justify="center" gap="xs" h="100%" py="xl">
@@ -25,7 +26,7 @@ export function PlaceholderResultCard({ loading }) {
 
 
 // Displays the result of the image analysis, including whether the item is recyclable, confidence level, and any additional instructions or information.
-export function ResultCard({ result, linkDisabled = false }) {
+export function ResultCard({ result, linkDisabled = false }: { result: IdentificationResult; linkDisabled?: boolean }) {
   const {
     contains_recyclable_item, material_type, item_description, confidence,
     unidentified_reason, category, display_name, is_recyclable, instructions,
@@ -71,7 +72,7 @@ export function ResultCard({ result, linkDisabled = false }) {
           {recyclable ? 'Recyclable' : 'Not generally recyclable'}
         </Badge>
 
-        {item_description && material_type.toLowerCase() !== display_name.toLowerCase() && (
+        {item_description && material_type?.toLowerCase() !== display_name?.toLowerCase() && (
           <Text size="sm" c="dimmed">
             Description: {item_description}
           </Text>

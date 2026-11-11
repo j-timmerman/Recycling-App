@@ -40,7 +40,7 @@ export function ProfilePage() {
     );
   }
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: { username: string }) => {
     setLoading(true);
     try {
       const updated = await profileService.updateProfile(profile.id, {
@@ -49,7 +49,7 @@ export function ProfilePage() {
       setProfile(updated);
       notifications.show({ color: '#737d51', message: 'Profile updated' });
     } catch (err) {
-      notifications.show({ color: '#7e3a34', message: err.message });
+      notifications.show({ color: '#7e3a34', message: err instanceof Error ? err.message : 'Could not update profile' });
     } finally {
       setLoading(false);
     }

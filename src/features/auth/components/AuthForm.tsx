@@ -2,8 +2,20 @@ import { useState } from 'react';
 import { TextInput, PasswordInput, Button, Stack, Alert } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
-export function AuthForm({ onPassword, passwordLabel, withName = false }) {
-  const [error, setError] = useState(null);
+export interface AuthFormValues {
+  email: string;
+  fullName: string;
+  password: string;
+}
+
+interface AuthFormProps {
+  onPassword: (values: AuthFormValues) => Promise<void>;
+  passwordLabel: string;
+  withName?: boolean;
+}
+
+export function AuthForm({ onPassword, passwordLabel, withName = false }: AuthFormProps) {
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const form = useForm({
@@ -15,13 +27,13 @@ export function AuthForm({ onPassword, passwordLabel, withName = false }) {
     },
   });
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: AuthFormValues) => {
     setError(null);
     setLoading(true);
     try {
       await onPassword(values);
     } catch (err) {
-      setError(err.message ?? 'Something went wrong');
+      setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
       setLoading(false);
     }

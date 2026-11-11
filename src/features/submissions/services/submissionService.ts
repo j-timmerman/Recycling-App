@@ -1,10 +1,11 @@
 import { supabase } from '../../../lib/supabaseClient';
+import type { Submission } from '../../../types/database';
 
 const BUCKET = 'recycling-photos';
 
 export const submissionService = {
   
-  async listSubmissions(authUserId) {
+  async listSubmissions(authUserId: string): Promise<Submission[]> {
     const { data: profile, error: profileError } = await supabase
       .from('recycling_app_user_profiles')
       .select('id').eq('auth_user_id', authUserId).maybeSingle();
@@ -15,10 +16,10 @@ export const submissionService = {
       .select('id, user_id, image_url, material_type, item_description, created_at, material:recycling_app_material_info(display_name, is_generally_recyclable, instructions, source_url)')
       .eq('user_id', profile.id).order('created_at', { ascending: false });
     if (error) throw error;
-    return data;
+    return data as unknown as Submission[];
   },
 
-  async removeSubmission(submission, authUserId) {
+  async removeSubmission(submission: Submission, authUserId: string) {
     // Only remove photos from the signed-in user's folder in this app's bucket.
     const { data: bucket } = supabase.storage.from(BUCKET).getPublicUrl('');
     const baseUrl = bucket.publicUrl.endsWith('/') ? bucket.publicUrl : `${bucket.publicUrl}/`;

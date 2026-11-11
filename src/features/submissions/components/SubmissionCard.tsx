@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Anchor, Badge, Button, Card, Center, Group, Image, Stack, Text, Title } from '@mantine/core';
 import { IconPhoto, IconTrash } from '@tabler/icons-react';
+import type { Submission } from '../../../types/database';
 
 
 
-function SubmissionImage({ submission, name }) {
+function SubmissionImage({ submission, name }: { submission: Submission; name: string }) {
   const [failed, setFailed] = useState(false);
   return failed ? (
     <Center h={200} bg="gray.0">
@@ -19,7 +20,7 @@ function SubmissionImage({ submission, name }) {
   );
 }
 
-export function SubmissionCard({ submission, onDelete }) {
+export function SubmissionCard({ submission, onDelete }: { submission: Submission; onDelete: (submission: Submission) => void }) {
   const name = submission.material?.display_name || submission.material_type?.replaceAll('_', ' ') || 'Unidentified item';
   const recyclable = submission.material?.is_generally_recyclable;
 

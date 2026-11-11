@@ -11,7 +11,7 @@ const GreenColors = [
   '#828c5d',
   '#737d51',
   '#4b5232',
-];
+] as const;
 
 export const theme = createTheme({
   colors: {

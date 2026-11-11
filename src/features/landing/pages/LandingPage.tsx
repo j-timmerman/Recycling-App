@@ -59,6 +59,7 @@ export function LandingPage() {
                     material_type: 'Carton',
                     category: 'Paper',
                     confidence: 1,
+                    unidentified_reason: null,
                     instructions: 'Often accepted curbside. Empty and rinse first. See the linked guide for local acceptance.',
                     source_url: 'https://earth911.com/recycling-guide/how-to-recycle-carton/',
                   }}

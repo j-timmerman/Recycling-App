@@ -3,13 +3,14 @@ import { Box, Container, Title, Paper, Text, Anchor, Stack, Alert } from '@manti
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthForm } from '../components/AuthForm';
 import { useAuth } from '../hooks/useAuth';
+import type { AuthFormValues } from '../components/AuthForm';
 
 export function SignUpPage() {
   const { signUpWithPassword } = useAuth();
   const navigate = useNavigate();
   const [confirmEmailSent, setConfirmEmailSent] = useState(false);
 
-  const handlePasswordSignUp = async ({ email, password, fullName }) => {
+  const handlePasswordSignUp = async ({ email, password, fullName }: AuthFormValues) => {
     const { session } = await signUpWithPassword(email, password, fullName);
     if (session) {
       navigate('/', { replace: true });

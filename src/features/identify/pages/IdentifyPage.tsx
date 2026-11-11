@@ -10,24 +10,26 @@ import {
 import { ResultCard, PlaceholderResultCard } from '../components/ResultCards';
 import { resizeImageToBase64 } from '../utils/resizeImageToBase64';
 import { supabase } from '../../../lib/supabaseClient';
+import type { ChangeEvent } from 'react';
+import type { IdentificationResult, ApiError } from '../../../types/api';
 
 export function IdentifyPage() {
   const queryClient = useQueryClient();
-  const cameraInputRef = useRef(null);
-  const [file, setFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
+  const [result, setResult] = useState<IdentificationResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleFileChange(selectedFile) {
+  function handleFileChange(selectedFile: File | null) {
     setFile(selectedFile);
     setResult(null);
     setError(null);
     setPreviewUrl(selectedFile ? URL.createObjectURL(selectedFile) : null);
   }
 
-  function handleCameraCapture(event) {
+  function handleCameraCapture(event: ChangeEvent<HTMLInputElement>) {
     const selectedFile = event.target.files?.[0] || null;
     handleFileChange(selectedFile);
     event.target.value = '';
@@ -46,7 +48,7 @@ export function IdentifyPage() {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      const headers = { 'Content-Type': 'application/json' };
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       if (session) headers.Authorization = `Bearer ${session.access_token}`;
 
       const response = await fetch(`${apiUrl}/api/identify`, {
@@ -55,14 +57,15 @@ export function IdentifyPage() {
         body: JSON.stringify({ image, mimeType: 'image/jpeg' }),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Identification failed');
+      const data: IdentificationResult | ApiError = await response.json();
+      if (!response.ok) throw new Error('error' in data ? data.error : 'Identification failed');
+      if ('error' in data) throw new Error(data.error);
       setResult(data);
       if (data.saved && session?.user) {
         queryClient.invalidateQueries({ queryKey: ['submissions', session.user.id] });
       }
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'Identification failed');
     } finally {
       setLoading(false);
     }

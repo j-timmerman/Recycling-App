@@ -1,6 +1,6 @@
 import { Group, Stack, Text, Title } from '@mantine/core';
 
-export function PlaceholderPage({ title, description }) {
+export function PlaceholderPage({ title, description }: { title: string; description?: string }) {
   return (
     <Stack gap="xs">
       <Group gap="sm">

@@ -1,17 +1,18 @@
 import { supabase } from '../../../lib/supabaseClient';
+import type { Profile } from '../../../types/database';
 
 export const profileService = {
-  async getByAuthUserId(authUserId) {
+  async getByAuthUserId(authUserId: string) {
     const { data, error } = await supabase
       .from('recycling_app_user_profiles')
       .select('*')
       .eq('auth_user_id', authUserId)
       .maybeSingle();
     if (error) throw error;
-    return data;
+    return data as Profile | null;
   },
 
-  async getByUsername(username) {
+  async getByUsername(username: string) {
     const { data, error } = await supabase
       .from('recycling_app_user_profiles')
       .select('id')
@@ -21,7 +22,7 @@ export const profileService = {
     return data;
   },
 
-  async updateProfile(profileId, updates) {
+  async updateProfile(profileId: string, updates: Partial<Pick<Profile, 'username'>>) {
     const { data, error } = await supabase
       .from('recycling_app_user_profiles')
       .update(updates)
@@ -29,6 +30,6 @@ export const profileService = {
       .select()
       .single();
     if (error) throw error;
-    return data;
+    return data as Profile;
   },
 };
